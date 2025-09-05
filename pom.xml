@@ -8,13 +8,21 @@
   <artifactId>SaaSshortLink-all</artifactId>
   <version>1.0-SNAPSHOT</version>
 
+  <packaging>pom</packaging>
+  <!-- 不参与打包jar包 -->
+
+  <modules>
+    <module>admin</module>
+    <module>project</module>
+    <module>gateway</module>
+  </modules>
+
+
   <properties>
     <maven.compiler.source>22</maven.compiler.source>
     <maven.compiler.target>22</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
-  <properties>
     <java.version>17</java.version>
     <spring-boot.version>3.0.7</spring-boot.version>
     <spring-cloud.version>2022.0.3</spring-cloud.version>
