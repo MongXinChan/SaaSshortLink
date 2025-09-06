@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.controller;
 
 
+import com.MongxinChan.SaaSshortLink.admin.convention.Result;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,12 @@ public class UserController {
    * 根据用户名查询用户信息
    */
   @GetMapping("/api/SaaSshortLink/v1/user/{userName}")
-  public UserRespDTO getUserByUsername(@PathVariable("userName")String userName) {
-    return userService.getUserByUsername(userName);
+  public Result<UserRespDTO> getUserByUsername(@PathVariable("userName")String userName) {
+    UserRespDTO result = userService.getUserByUsername(userName);
+    if (result == null){
+      return new Result<UserRespDTO>().setCode("1").setMessage("用户登陆成功");
+    } else {
+      return new Result<UserRespDTO>().setCode("0").setData(result);
+    }
   }
 }
