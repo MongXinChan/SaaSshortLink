@@ -1,4 +1,4 @@
-package com.MongxinChan.SaaSshortLink.admin.convention;
+package com.MongxinChan.SaaSshortLink.admin.common.convention.result;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
