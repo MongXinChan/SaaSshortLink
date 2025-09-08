@@ -1,5 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.dto.resp;
 
+import com.MongxinChan.SaaSshortLink.admin.common.serialize.PhoneDesensitizationSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 /**
@@ -25,6 +27,8 @@ public class UserRespDTO {
   /**
    * 手机
    */
+  @JsonSerialize(using = PhoneDesensitizationSerializer.class)
+  //读取出来字段，进行泛解析
   private String phone;
 
   /**

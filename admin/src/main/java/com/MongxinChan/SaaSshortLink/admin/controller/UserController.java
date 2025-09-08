@@ -1,8 +1,10 @@
 package com.MongxinChan.SaaSshortLink.admin.controller;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
-import com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum;
+import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
+import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserActualRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +27,14 @@ public class UserController {
    */
   @GetMapping("/api/SaaSshortLink/v1/user/{userName}")
   public Result<UserRespDTO> getUserByUsername(@PathVariable("userName")String userName) {
-    UserRespDTO result = userService.getUserByUsername(userName);
-    if (result == null){
-      return new Result<UserRespDTO>().setCode(UserErrorCodeEnum.USER_NULL.code()).setMessage(UserErrorCodeEnum.USER_NULL.errorMessage());
-    } else {
-      return new Result<UserRespDTO>().setCode("0").setData(result);
-    }
+    return  Results.success(userService.getUserByUsername(userName));
+  }
+
+  /**
+   * 根据用户名查询无脱敏用户信息
+   */
+  @GetMapping("/api/SaaSshortLink/v1/actual/{userName}")
+  public Result<UserActualRespDTO> getActualUserByUserName(@PathVariable("userName")String userName){
+    return Results.success(BeanUtil.toBean(userService.getUserByUsername(userName),UserActualRespDTO.class));
   }
 }
