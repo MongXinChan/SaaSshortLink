@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 用户接口层
+ * @author Mongxin
  */
 public interface UserService extends IService<UserDO> {
 
@@ -15,4 +16,13 @@ public interface UserService extends IService<UserDO> {
      * @return 用户返回实体
      */
     UserRespDTO getUserByUsername(String userName);
+
+    /**
+     * 查询用户名是否存在
+     * @param userName 用户名
+     * @return 用户名存在返回 True,反之 False
+     */
+    Boolean hasUsername(String userName);
+
+
 }

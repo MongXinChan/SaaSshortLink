@@ -7,14 +7,20 @@ import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBloomFilter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
  * 用户接口实现层
+ * @author Mongxin
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
+
+  private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
 
   @Override
   public UserRespDTO getUserByUsername(String userName) {
@@ -24,4 +30,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     BeanUtils.copyProperties(userDO,result);
     return result;
   }
+
+  @Override
+  public Boolean hasUsername(String userName) {
+    return userRegisterCachePenetrationBloomFilter.contains(userName);
+  }
+
+
 }

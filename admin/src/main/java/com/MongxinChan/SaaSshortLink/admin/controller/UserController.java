@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author Mongxin
+ */
 @RestController
 @RequiredArgsConstructor //通过构造器方式注入
 
@@ -36,5 +39,15 @@ public class UserController {
   @GetMapping("/api/SaaSshortLink/v1/actual/{userName}")
   public Result<UserActualRespDTO> getActualUserByUserName(@PathVariable("userName")String userName){
     return Results.success(BeanUtil.toBean(userService.getUserByUsername(userName),UserActualRespDTO.class));
+  }
+
+  /**
+   * 查询用户名是否存在
+   * @param userName 用户名
+   * @return 存在返回 true 反之 false
+   */
+  @GetMapping("/api/SaaSshortLink/v1/actual/has-userName")
+  public Result<Boolean>hasUserName(@PathVariable("userName")String userName){
+    return Results.success(userService.hasUsername(userName));
   }
 }
