@@ -52,9 +52,9 @@ public class UserController {
      * @param userName 用户名
      * @return 存在返回 true 反之 false
      */
-    @GetMapping("/api/saas-short-link/v1/actual/has-userName")
-    public Result<Boolean> hasUserName(@PathVariable("userName") String userName) {
-        return Results.success(userService.hasUsername(userName));
+    @GetMapping("/api/saas-short-link/v1/has-username")
+    public Result<Boolean> availableUserName(@PathVariable("userName") String userName) {
+        return Results.success(userService.availableUserName(userName));
     }
 
     /**
