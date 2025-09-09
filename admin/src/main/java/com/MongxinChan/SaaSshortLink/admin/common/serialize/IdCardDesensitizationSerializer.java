@@ -9,13 +9,15 @@ import java.io.IOException;
 
 /**
  * 身份证号脱敏反序列化
+ *
  * @author Mongxin
  */
 public class IdCardDesensitizationSerializer extends JsonSerializer<String> {
 
-  @Override
-  public void serialize(String idCard, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-    String phoneDesensitization = DesensitizedUtil.idCardNum(idCard, 4, 4);
-    jsonGenerator.writeString(phoneDesensitization);
-  }
+    @Override
+    public void serialize(String idCard, JsonGenerator jsonGenerator,
+            SerializerProvider serializerProvider) throws IOException {
+        String phoneDesensitization = DesensitizedUtil.idCardNum(idCard, 4, 4);
+        jsonGenerator.writeString(phoneDesensitization);
+    }
 }

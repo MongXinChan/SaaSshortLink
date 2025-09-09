@@ -20,38 +20,40 @@ import org.springframework.stereotype.Service;
 
 /**
  * 用户接口实现层
+ *
  * @author Mongxin
  */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
 
-  private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
+    private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
 
-  @Override
-  public UserRespDTO getUserByUsername(String userName) {
-    LambdaQueryWrapper<UserDO> queryWrapper =Wrappers.lambdaQuery(UserDO.class).eq(UserDO::getUserName,userName);
-    UserDO userDO =baseMapper.selectOne(queryWrapper);
-    UserRespDTO result = new UserRespDTO();
-    BeanUtils.copyProperties(userDO,result);
-    return result;
-  }
-
-  @Override
-  public Boolean hasUsername(String userName) {
-    return userRegisterCachePenetrationBloomFilter.contains(userName);
-  }
-
-  @Override
-  public void register(UserRegisterReqDTO requestParam) {
-    if (hasUsername(requestParam.getUserName())){
-      throw new ClientException(USER_NAME_EXIST);
+    @Override
+    public UserRespDTO getUserByUsername(String userName) {
+        LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
+                .eq(UserDO::getUserName, userName);
+        UserDO userDO = baseMapper.selectOne(queryWrapper);
+        UserRespDTO result = new UserRespDTO();
+        BeanUtils.copyProperties(userDO, result);
+        return result;
     }
-    int inserted=baseMapper.insert(BeanUtil.toBean(requestParam,UserDO.class));
-    if(inserted<1){
-      throw new ClientException(USER_SAVE_ERROR);
+
+    @Override
+    public Boolean hasUsername(String userName) {
+        return userRegisterCachePenetrationBloomFilter.contains(userName);
     }
-  }
+
+    @Override
+    public void register(UserRegisterReqDTO requestParam) {
+        if (hasUsername(requestParam.getUserName())) {
+            throw new ClientException(USER_NAME_EXIST);
+        }
+        int inserted = baseMapper.insert(BeanUtil.toBean(requestParam, UserDO.class));
+        if (inserted < 1) {
+            throw new ClientException(USER_SAVE_ERROR);
+        }
+    }
 
 
 }

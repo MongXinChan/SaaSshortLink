@@ -12,53 +12,53 @@ import lombok.Data;
 @TableName("tUser")
 public class UserDO {
 
-  /**
-   * ID
-   */
-  private Long id;
+    /**
+     * ID
+     */
+    private Long id;
 
-  /**
-   * 用户名
-   */
-  private String userName;
+    /**
+     * 用户名
+     */
+    private String userName;
 
-  /**
-   * 密码
-   */
-  private String password;
+    /**
+     * 密码
+     */
+    private String password;
 
-  /**
-   * 真实姓名
-   */
-  private String realName;
+    /**
+     * 真实姓名
+     */
+    private String realName;
 
-  /**
-   * 手机
-   */
-  private String phone;
+    /**
+     * 手机
+     */
+    private String phone;
 
-  /**
-   * 邮箱
-   */
-  private String mail;
+    /**
+     * 邮箱
+     */
+    private String mail;
 
-  /**
-   * 创建时间
-   */
-  private Date createTime;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
-  /**
-   * 注销时间
-   */
-  private Date deleteTime;
+    /**
+     * 注销时间
+     */
+    private Date deleteTime;
 
-  /**
-   * 修改时间
-   */
-  private Date updateTime;
+    /**
+     * 修改时间
+     */
+    private Date updateTime;
 
-  /**
-   * 删除标识 0：未删除 1：已删除
-   */
-  private Boolean delFlag;
+    /**
+     * 删除标识 0：未删除 1：已删除
+     */
+    private Boolean delFlag;
 }
