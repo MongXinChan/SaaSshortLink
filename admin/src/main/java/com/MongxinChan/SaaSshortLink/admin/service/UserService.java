@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.service;
 
 import com.MongxinChan.SaaSshortLink.admin.dao.entity.UserDO;
+import com.MongxinChan.SaaSshortLink.admin.dto.req.UserRegisterReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -24,5 +25,10 @@ public interface UserService extends IService<UserDO> {
      */
     Boolean hasUsername(String userName);
 
+    /**
+     * 注册用户
+     * @param requestParam 注册用户请求参数
+     */
+    void register(UserRegisterReqDTO requestParam);
 
 }
