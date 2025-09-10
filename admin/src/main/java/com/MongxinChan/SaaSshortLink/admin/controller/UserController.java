@@ -4,15 +4,20 @@ package com.MongxinChan.SaaSshortLink.admin.controller;
 import cn.hutool.core.bean.BeanUtil;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
+import com.MongxinChan.SaaSshortLink.admin.dto.req.UserLoginReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.UserRegisterReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.dto.req.UserUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserActualRespDTO;
+import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserLoginRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -67,5 +72,42 @@ public class UserController {
     public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
         userService.register(requestParam);
         return Results.success();
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param requestParam
+     * @return
+     */
+    @PutMapping("/api/saas-short-link/v1/user")
+    public Result<Void> update(@RequestBody UserUpdateReqDTO requestParam) {
+        return Results.success();
+    }
+
+    /**
+     * 用户登录
+     *
+     * @param requestParam
+     * @return
+     */
+    @PutMapping("/api/saas-short-link/v1/user/login")
+    public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) {
+        UserLoginRespDTO result = userService.login(requestParam);
+        return Results.success(null);
+    }
+
+
+    /**
+     * 检查用户是否登录
+     *
+     * @param userName
+     * @param token
+     * @return
+     */
+    @GetMapping("/api/saas-short-link/v1/user/check-login")
+    public Result<Boolean> checkLogin(@RequestParam("userName") String userName,
+            @RequestParam("token") String token) {
+        return Results.success(userService.checkLogin(userName, token));
     }
 }
