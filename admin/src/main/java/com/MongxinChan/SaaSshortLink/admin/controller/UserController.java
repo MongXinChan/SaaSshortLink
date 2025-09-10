@@ -12,6 +12,7 @@ import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserLoginRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +54,6 @@ public class UserController {
 
     /**
      * 查询用户名是否存在
-     *
      * @param userName 用户名
      * @return 存在返回 true 反之 false
      */
@@ -64,7 +64,6 @@ public class UserController {
 
     /**
      * 注册用户
-     *
      * @param requestParam 参数体
      * @return 注册是否成功
      */
@@ -76,7 +75,6 @@ public class UserController {
 
     /**
      * 修改用户
-     *
      * @param requestParam
      * @return
      */
@@ -87,7 +85,6 @@ public class UserController {
 
     /**
      * 用户登录
-     *
      * @param requestParam
      * @return
      */
@@ -100,7 +97,6 @@ public class UserController {
 
     /**
      * 检查用户是否登录
-     *
      * @param userName
      * @param token
      * @return
@@ -109,5 +105,18 @@ public class UserController {
     public Result<Boolean> checkLogin(@RequestParam("userName") String userName,
             @RequestParam("token") String token) {
         return Results.success(userService.checkLogin(userName, token));
+    }
+
+    /**
+     * 用户退出登录
+     *
+     * @param userName
+     * @return
+     */
+    @DeleteMapping("/api/saas-short-link/v1/user/logout")
+    public Result<Void> logout(@RequestParam("userName") String userName,
+            @RequestParam("token") String token) {
+        userService.logout(userName, token);
+        return Results.success();
     }
 }
