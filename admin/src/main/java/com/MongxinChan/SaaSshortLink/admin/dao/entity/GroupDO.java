@@ -1,15 +1,25 @@
 package com.MongxinChan.SaaSshortLink.admin.dao.entity;
 
+import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 短链接分组实体
+ * @author Mongxin
  */
 @Data
 @TableName("tGroup")
-public class GroupDO {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GroupDO extends BaseDO {
 
     /**
      * id
@@ -34,15 +44,18 @@ public class GroupDO {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
      * 更新时间
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
     /**
      * 是否删除
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer delFlag;
 }
