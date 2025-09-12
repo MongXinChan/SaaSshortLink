@@ -1,10 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.dao.entity;
 
 import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,22 +37,4 @@ public class GroupDO extends BaseDO {
      * 创造短链接的用户名
      */
     private String userName;
-
-    /**
-     * 创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
-    /**
-     * 是否删除
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Integer delFlag;
 }
