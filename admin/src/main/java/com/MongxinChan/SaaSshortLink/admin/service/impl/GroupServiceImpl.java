@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.MongxinChan.SaaSshortLink.admin.common.biz.user.UserContext;
 import com.MongxinChan.SaaSshortLink.admin.dao.entity.GroupDO;
 import com.MongxinChan.SaaSshortLink.admin.dao.mapper.GroupMapper;
-import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
+import com.MongxinChan.SaaSshortLink.admin.common.database.BaseDO;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.ShortLinkGroupRespDTO;

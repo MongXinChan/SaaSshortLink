@@ -1,6 +1,6 @@
 package com.MongxinChan.SaaSshortLink.admin.dao.entity;
 
-import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
+import com.MongxinChan.SaaSshortLink.admin.common.database.BaseDO;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
