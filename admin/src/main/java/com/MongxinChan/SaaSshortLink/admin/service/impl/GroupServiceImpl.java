@@ -5,6 +5,7 @@ import com.MongxinChan.SaaSshortLink.admin.common.biz.user.UserContext;
 import com.MongxinChan.SaaSshortLink.admin.dao.entity.GroupDO;
 import com.MongxinChan.SaaSshortLink.admin.dao.mapper.GroupMapper;
 import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
+import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.GroupService;
@@ -14,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +75,24 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         groupDO.setDelFlag(1);
         baseMapper.update(groupDO, updateWrapper);
 
+    }
+
+    @Override
+    public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
+        // 构造一个 List<GroupDO> 列表，用于批量更新
+        List<GroupDO> groupList = requestParam.stream()
+                .map(req -> {
+                    GroupDO groupDO = new GroupDO();
+                    groupDO.setGid(req.getGid());
+                    groupDO.setSortOrder(req.getSortOrder());
+                    return groupDO;
+                })
+                .collect(Collectors.toList());
+
+        // 调用 MyBatis-Plus 的批量更新方法
+        // 这里的 saveOrUpdateBatch 方法会根据主键（gid）自动判断是新增还是更新
+        // 如果没有批量更新方法，也可以考虑手动拼装 SQL 语句
+        saveOrUpdateBatch(groupList);
     }
 
     private boolean hasGid(String gid) {
