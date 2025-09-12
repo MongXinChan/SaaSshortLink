@@ -3,6 +3,7 @@ package com.MongxinChan.SaaSshortLink.admin.controller;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.GroupService;
 import java.util.List;
@@ -36,5 +37,14 @@ public class GroupController {
     @GetMapping("/api/saas-short-link/v1/group")
     public Result<List<ShortLinkGroupRespDTO>> listGroup() {
         return Results.success(groupService.listGroup());
+    }
+
+    /**
+     * 修改短链接分组名
+     */
+    @PostMapping("/api/saas-short-link/v1/group")
+    public Result<Void> updateGroup(@RequestBody ShortLinkGroupUpdateReqDTO requestParam) {
+        groupService.updateGroup(requestParam);
+        return Results.success();
     }
 }
