@@ -23,7 +23,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         String gid;
         do {
             gid = RandomGenerator.generateRandom();
-        } while (!hasGid(gid));
+        } while (hasGid(gid));
         GroupDO groupDO = GroupDO.builder()
                 .gid(gid)
                 .name(groupName)
