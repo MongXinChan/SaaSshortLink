@@ -8,6 +8,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
@@ -26,14 +27,18 @@ public class UserTransmitFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
             FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        String username = httpServletRequest.getHeader("userName");
-        String token = httpServletRequest.getHeader("token");
-        Object userInfoJsonStr = stringRedisTemplate.opsForHash().get("login_" + username, token);
-        if (userInfoJsonStr != null) {
+        String requestURI = httpServletRequest.getRequestURI();
+        if (!Objects.equals(requestURI, "/api/short-link/user/login")) {
+            String username = httpServletRequest.getHeader("userName");
+            String token = httpServletRequest.getHeader("token");
+            Object userInfoJsonStr = stringRedisTemplate.opsForHash()
+                    .get("login_" + username, token);
+            if (userInfoJsonStr != null) {
 
-            UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(),
-                    UserInfoDTO.class);
-            UserContext.setUser(userInfoDTO);
+                UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(),
+                        UserInfoDTO.class);
+                UserContext.setUser(userInfoDTO);
+            }
         }
         try {
             filterChain.doFilter(servletRequest, servletResponse);
