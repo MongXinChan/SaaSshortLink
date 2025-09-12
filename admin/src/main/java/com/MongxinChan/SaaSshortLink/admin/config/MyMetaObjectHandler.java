@@ -13,7 +13,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.strictInsertFill(metaObject, "createTime", Date::new, Date.class);
         this.strictInsertFill(metaObject, "updateTime", Date::new, Date.class);
-        this.strictInsertFill(metaObject, "delFlag", () -> false, Boolean.class);
+        this.strictInsertFill(metaObject, "delFlag", () -> 0, Integer.class);
         // Integer.class对应int，Boolean.class对应bool
     }
 
