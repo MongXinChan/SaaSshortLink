@@ -8,6 +8,7 @@ import com.MongxinChan.SaaSshortLink.admin.dto.resp.ShortLinkGroupRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.GroupService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +46,15 @@ public class GroupController {
     @PostMapping("/api/saas-short-link/v1/group")
     public Result<Void> updateGroup(@RequestBody ShortLinkGroupUpdateReqDTO requestParam) {
         groupService.updateGroup(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 删除短链接分组
+     */
+    @DeleteMapping("/api/saas-short-link/v1/group")
+    public Result<Void> deleteGroup(@RequestBody String gid) {
+        groupService.deleteGroup(gid);
         return Results.success();
     }
 }
