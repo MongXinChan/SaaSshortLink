@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.MongxinChan.SaaSshortLink.admin.common.biz.user.UserContext;
 import com.MongxinChan.SaaSshortLink.admin.dao.entity.GroupDO;
 import com.MongxinChan.SaaSshortLink.admin.dao.mapper.GroupMapper;
 import com.MongxinChan.SaaSshortLink.admin.database.BaseDO;
@@ -31,6 +32,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         GroupDO groupDO = GroupDO.builder()
                 .gid(gid)
                 .sortOrder(0)
+                .userName(UserContext.getUsername())
                 .name(groupName)
                 .build();
 
@@ -39,10 +41,9 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public List<ShortLinkGroupRespDTO> listGroup() {
-        //TODO 从当前的请求中获取用户名,这里还没实现逻辑,用伪代码实现
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getDelFlag, 0)
-                .eq(GroupDO::getUserName, "Jobstone")
+                .eq(GroupDO::getUserName, UserContext.getUsername())
                 .orderByDesc(GroupDO::getSortOrder, BaseDO::getUpdateTime);
         List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
         return BeanUtil.copyToList(groupDOList, ShortLinkGroupRespDTO.class);
@@ -51,8 +52,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     private boolean hasGid(String gid) {
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGid, gid)
-                //TODO 设置用户名
-                .eq(GroupDO::getUserName, null);
+                .eq(GroupDO::getUserName, UserContext.getUsername());
 
         // userName需要从网关中获取，目前还没有撰写相关逻辑，后续写后再补上。
         GroupDO hasGroupFlag = baseMapper.selectOne(queryWrapper);
