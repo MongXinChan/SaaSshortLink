@@ -37,7 +37,7 @@ public class UserController {
     /**
      * 根据用户名查询用户信息
      */
-    @GetMapping("/api/saas-short-link/v1/user/{userName}")
+    @GetMapping("/api/saas-short-link/admin/v1/user/{userName}")
     public Result<UserRespDTO> getUserByUsername(@PathVariable("userName") String userName) {
         return Results.success(userService.getUserByUsername(userName));
     }
@@ -45,7 +45,7 @@ public class UserController {
     /**
      * 根据用户名查询无脱敏用户信息
      */
-    @GetMapping("/api/saas-short-link/v1/actual/{userName}")
+    @GetMapping("/api/saas-short-link/admin/v1/actual/{userName}")
     public Result<UserActualRespDTO> getActualUserByUserName(
             @PathVariable("userName") String userName) {
         return Results.success(
@@ -57,7 +57,7 @@ public class UserController {
      * @param userName 用户名
      * @return 存在返回 true 反之 false
      */
-    @GetMapping("/api/saas-short-link/v1/has-username")
+    @GetMapping("/api/saas-short-link/admin/v1/has-username")
     public Result<Boolean> availableUserName(@PathVariable("userName") String userName) {
         return Results.success(userService.availableUserName(userName));
     }
@@ -67,7 +67,7 @@ public class UserController {
      * @param requestParam 参数体
      * @return 注册是否成功
      */
-    @PostMapping("/api/saas-short-link/v1/user")
+    @PostMapping("/api/saas-short-link/admin/v1/user")
     public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
         userService.register(requestParam);
         return Results.success();
@@ -78,7 +78,7 @@ public class UserController {
      * @param requestParam
      * @return
      */
-    @PutMapping("/api/saas-short-link/v1/user")
+    @PutMapping("/api/saas-short-link/admin/v1/user")
     public Result<Void> update(@RequestBody UserUpdateReqDTO requestParam) {
         return Results.success();
     }
@@ -88,7 +88,7 @@ public class UserController {
      * @param requestParam
      * @return
      */
-    @PutMapping("/api/saas-short-link/v1/user/login")
+    @PutMapping("/api/saas-short-link/admin/v1/user/login")
     public Result<UserLoginRespDTO> login(@RequestBody UserLoginReqDTO requestParam) {
         UserLoginRespDTO result = userService.login(requestParam);
         return Results.success(null);
@@ -101,7 +101,7 @@ public class UserController {
      * @param token
      * @return
      */
-    @GetMapping("/api/saas-short-link/v1/user/check-login")
+    @GetMapping("/api/saas-short-link/admin/v1/user/check-login")
     public Result<Boolean> checkLogin(@RequestParam("userName") String userName,
             @RequestParam("token") String token) {
         return Results.success(userService.checkLogin(userName, token));
@@ -113,7 +113,7 @@ public class UserController {
      * @param userName
      * @return
      */
-    @DeleteMapping("/api/saas-short-link/v1/user/logout")
+    @DeleteMapping("/api/saas-short-link/admin/v1/user/logout")
     public Result<Void> logout(@RequestParam("userName") String userName,
             @RequestParam("token") String token) {
         userService.logout(userName, token);
