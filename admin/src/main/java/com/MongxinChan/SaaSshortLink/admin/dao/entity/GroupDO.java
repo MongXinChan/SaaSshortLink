@@ -37,4 +37,9 @@ public class GroupDO extends BaseDO {
      * 创造短链接的用户名
      */
     private String userName;
+
+    /**
+     * 分组排序
+     */
+    private Integer sortOrder;
 }
