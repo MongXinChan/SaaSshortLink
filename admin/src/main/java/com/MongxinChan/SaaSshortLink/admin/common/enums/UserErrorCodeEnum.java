@@ -8,6 +8,8 @@ import com.MongxinChan.SaaSshortLink.admin.common.convention.errorCode.IErrorCod
 
 public enum UserErrorCodeEnum implements IErrorCode {
 
+    USER_TOKEN_FAIL("A00200", "用户Token验证失败"),
+
     USER_EXIST("B002002", "用户记录已存在"),
 
 
