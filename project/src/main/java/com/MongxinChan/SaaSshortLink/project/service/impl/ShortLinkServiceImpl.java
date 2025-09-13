@@ -32,31 +32,28 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
     private final RBloomFilter<String> shortUriCreateCachePenetrationBloomFilter;
 
-    private String generatedSuffix(ShortLinkCreateReqDTO requestParam) {
+    private String generateSuffix(ShortLinkCreateReqDTO requestParam) {
         int customGenerateCount = 0;
         String shortURI;
         while (true) {
             if (customGenerateCount > 10) {
                 throw new ServiceException("短链接频繁生成，请稍后再试");
             }
-            String originalURL = requestParam.getOriginUrl();
-            shortURI = HashUtil.hashToBase62(originalURL);
+            String originUrl = requestParam.getOriginUrl();
+            originUrl += System.currentTimeMillis();
+            shortURI = HashUtil.hashToBase62(originUrl);
             if (!shortUriCreateCachePenetrationBloomFilter.contains(
                     requestParam.getDomain() + "/" + shortURI)) {
                 break;
             }
             customGenerateCount++;
         }
-
-        String originUrl = requestParam.getOriginUrl();
-        originUrl += System.currentTimeMillis();
-        shortURI = HashUtil.hashToBase62(originUrl);
-        return HashUtil.hashToBase62(originUrl);
+        return shortURI;
     }
 
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
-        String shortLinkSuffix = generatedSuffix(requestParam);
+        String shortLinkSuffix = generateSuffix(requestParam);
         String fullShortUrl = StrBuilder.create(requestParam.getDomain())
                 .append("/")
                 .append(shortLinkSuffix)
@@ -76,21 +73,19 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         try {
             baseMapper.insert(shortLinkDO);
         } catch (DuplicateKeyException ex) {
-            // TODO 已经误判的短链接如何处理
-            // 1.短链接真实存在缓存中
-            // 2.短链接不一定在缓存中
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
             ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
             if (hasShortLinkDO != null) {
-                log.warn("短链接{} 重复入库", fullShortUrl);
+                log.warn("短链接：{} 重复入库", fullShortUrl);
                 throw new ServiceException("短链接生成重复");
             }
         }
-        shortUriCreateCachePenetrationBloomFilter.add(fullShortUrl);
+        shortUriCreateCachePenetrationBloomFilter.add(shortLinkSuffix);
         return ShortLinkCreateRespDTO.builder()
-                .fullShortUrl(fullShortUrl)
+                .fullShortUrl(shortLinkDO.getFullShortUrl())
                 .originUrl(requestParam.getOriginUrl())
+                .gid(requestParam.getGid())
                 .build();
     }
 
@@ -100,7 +95,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .eq(ShortLinkDO::getGid, requestParam.getGid())
                 .eq(ShortLinkDO::getEnableStatus, 0)
                 .eq(ShortLinkDO::getDelFlag, 0)
-                .orderByDesc(ShortLinkDO::getCreatedType);
+                .orderByDesc(ShortLinkDO::getCreateTime);
         IPage<ShortLinkDO> resultPage = baseMapper.selectPage(requestParam, queryWrapper);
         return resultPage.convert(each -> BeanUtil.toBean(each, ShortLinkPageRespDTO.class));
     }

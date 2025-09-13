@@ -45,6 +45,7 @@ public class ShortLinkDO {
     /**
      * 原始长链接
      */
+    @TableField("`originURL`")
     private String originUrl;
 
     /**
@@ -81,6 +82,11 @@ public class ShortLinkDO {
      * 有效期
      */
     private Date validDate;
+
+    /**
+     * 创建时间
+     */
+    private Date createTime;
 
     /**
      * 描述
