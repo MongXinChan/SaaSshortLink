@@ -37,7 +37,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
             String originalURL = requestParam.getOriginUrl();
             shortURI = HashUtil.hashToBase62(originalURL);
-            if (shortUriCreateCachePenetrationBloomFilter.contains(
+            if (!shortUriCreateCachePenetrationBloomFilter.contains(
                     requestParam.getDomain() + "/" + shortURI)) {
                 break;
             }
@@ -83,10 +83,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 throw new ServiceException("短链接生成重复");
             }
         }
-        shortUriCreateCachePenetrationBloomFilter.add(shortLinkSuffix);
+        shortUriCreateCachePenetrationBloomFilter.add(fullShortUrl);
         return ShortLinkCreateRespDTO.builder()
-                .fullShortUrl(requestParam.getOriginUrl())
-                .originUrl(requestParam.getGid())
+                .fullShortUrl(fullShortUrl)
+                .originUrl(requestParam.getOriginUrl())
                 .build();
     }
 }

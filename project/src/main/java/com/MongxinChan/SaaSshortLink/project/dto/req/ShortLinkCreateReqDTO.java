@@ -1,5 +1,6 @@
 package com.MongxinChan.SaaSshortLink.project.dto.req;
 
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -41,7 +42,7 @@ public class ShortLinkCreateReqDTO {
     /**
      * 有效期
      */
-    private Data validDate;
+    private Date validDate;
 
     /**
      * 描述
