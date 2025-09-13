@@ -58,6 +58,11 @@ public class ShortLinkDO {
     private String gid;
 
     /**
+     * 图标
+     */
+    private String favicon;
+
+    /**
      * 启用标识 0：启用 1：未启用
      */
     private Integer enableStatus;
@@ -82,5 +87,10 @@ public class ShortLinkDO {
      */
     @TableField("`describe`")
     private String describe;
+
+    /***
+     * 是否删除
+     */
+    private Integer delFlag;
 
 }
