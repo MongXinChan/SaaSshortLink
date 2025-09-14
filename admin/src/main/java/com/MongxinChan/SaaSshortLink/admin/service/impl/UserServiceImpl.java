@@ -17,6 +17,7 @@ import com.MongxinChan.SaaSshortLink.admin.dto.req.UserRegisterReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.UserUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserLoginRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
+import com.MongxinChan.SaaSshortLink.admin.service.GroupService;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -43,6 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
     private final RedissonClient redissonClient;
     private final StringRedisTemplate stringRedisTemplate;
+    private final GroupService groupService;
 
     @Override
     public UserRespDTO getUserByUsername(String userName) {
@@ -80,6 +82,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
                     throw new ClientException(USER_EXIST);
                 }
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUserName());
+                groupService.saveGroup(requestParam.getUserName(), "默认分组");
                 return;
             }
             throw new ClientException(USER_NAME_EXIST);
