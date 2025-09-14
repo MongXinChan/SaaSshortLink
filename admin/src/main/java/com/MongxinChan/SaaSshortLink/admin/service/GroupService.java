@@ -19,8 +19,12 @@ public interface GroupService extends IService<GroupDO> {
      */
     void saveGroup(String groupName);
 
+    void saveGroup(String username, String groupName);
+
     /**
      * 查询短链接分组
+     *
+     * @param
      */
     List<ShortLinkGroupRespDTO> listGroup();
 
@@ -38,5 +42,11 @@ public interface GroupService extends IService<GroupDO> {
      */
     void deleteGroup(String gid);
 
+
+    /**
+     * 排序短链接
+     *
+     * @param requestParam
+     */
     void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam);
 }

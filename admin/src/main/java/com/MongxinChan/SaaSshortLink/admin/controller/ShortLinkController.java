@@ -1,7 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.controller;
 
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
-import com.MongxinChan.SaaSshortLink.admin.dto.ShortLinkRemoteService;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.ShortLinkRemoteService;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
