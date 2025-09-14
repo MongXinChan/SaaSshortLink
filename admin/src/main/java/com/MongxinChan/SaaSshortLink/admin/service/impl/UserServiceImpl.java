@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.admin.service.impl;
 
 import static com.MongxinChan.SaaSshortLink.admin.common.constant.RedisCacheConstant.LOCK_USER_REGISTER_KEY;
+import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum.USER_EXIST;
 import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum.USER_NAME_EXIST;
 import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
@@ -25,6 +26,7 @@ import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -67,9 +69,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUserName());
         try {
             if (lock.tryLock()) {
-                int inserted = baseMapper.insert(BeanUtil.toBean(requestParam, UserDO.class));
-                if (inserted < 1) {
-                    throw new ClientException(USER_SAVE_ERROR);
+                try {
+                    int inserted = baseMapper.insert(BeanUtil.toBean(requestParam, UserDO.class));
+                    if (inserted < 1) {
+                        throw new ClientException(USER_SAVE_ERROR);
+                    }
+                } catch (DuplicateKeyException ex) {
+                    throw new ClientException(USER_EXIST);
                 }
                 userRegisterCachePenetrationBloomFilter.add(requestParam.getUserName());
                 return;
@@ -91,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUserName, requestParam.getUsername())
-                .eq(UserDO::getPassword, requestParam.getUsername())
+                .eq(UserDO::getPassword, requestParam.getPassword())
                 .eq(UserDO::getDelFlag, false);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
         if (userDO == null) {
