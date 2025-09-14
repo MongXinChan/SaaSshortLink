@@ -1,9 +1,11 @@
 package com.MongxinChan.SaaSshortLink.admin.controller;
 
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
+import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.ShortLinkRemoteService;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkPageReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkUpdateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @author Mongxin
+ */
 @RestController
 public class ShortLinkController {
 
@@ -28,6 +33,15 @@ public class ShortLinkController {
     public Result<ShortLinkCreateRespDTO> createShortLink(
             @RequestBody ShortLinkCreateReqDTO requestParam) {
         return shortLinkRemoteService.createShortLink(requestParam);
+    }
+
+    /**
+     * 修改短链接
+     */
+    @PostMapping("/api/saas-short-link/admin/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+        shortLinkRemoteService.updateShortLink(requestParam);
+        return Results.success();
     }
 
     /**

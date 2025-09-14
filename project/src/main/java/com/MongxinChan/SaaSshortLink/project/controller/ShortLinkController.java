@@ -14,13 +14,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 短链接控制层
+ * @author Mongxin
  */
 @RestController
 @RequiredArgsConstructor
@@ -38,13 +38,14 @@ public class ShortLinkController {
     }
 
     /**
-     *
+     * 修改短链接
      */
-    @PutMapping("/api/saas-short-link/v1/update")
-    public Result<Void> updateShortLionk(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+    @PostMapping("/api/saas-short-link/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
         shortLinkService.updateShortLink(requestParam);
         return Results.success();
     }
+
     /**
      * 分页查询短链接
      */
