@@ -1,4 +1,4 @@
-package com.MongxinChan.SaaSshortLink.admin.dto;
+package com.MongxinChan.SaaSshortLink.admin.remote.dto;
 
 import cn.hutool.http.HttpUtil;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
