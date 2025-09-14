@@ -20,6 +20,13 @@ rules:
             shardingColumn: userName
             # 分片算法，对应 rules[0].shardingAlgorithms
             shardingAlgorithmName: user_table_hash_mod
+      tgroup:
+        actualDataNodes: ds_0.tgroup_${0..15}
+        tableStrategy:
+          standard:
+            shardingColumn: userName
+            #不能用gid，我们查当前用户下的gid分组，其是没有gid的
+            shardingAlgorithmName: user_table_hash_mod
     shardingAlgorithms:
       user_table_hash_mod:
         type: HASH_MOD
