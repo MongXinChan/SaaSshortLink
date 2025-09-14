@@ -6,7 +6,10 @@ import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum
 import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.UUID;
+import com.MongxinChan.SaaSshortLink.admin.common.constant.CacheKeys;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.exception.ClientException;
+import com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum;
 import com.MongxinChan.SaaSshortLink.admin.dao.entity.UserDO;
 import com.MongxinChan.SaaSshortLink.admin.dao.mapper.UserMapper;
 import com.MongxinChan.SaaSshortLink.admin.dto.req.UserLoginReqDTO;
@@ -17,9 +20,9 @@ import com.MongxinChan.SaaSshortLink.admin.dto.resp.UserRespDTO;
 import com.MongxinChan.SaaSshortLink.admin.service.UserService;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
@@ -32,17 +35,13 @@ import org.springframework.stereotype.Service;
 
 /**
  * 用户接口实现层
- *
- * @author Mongxin
  */
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements UserService {
 
     private final RBloomFilter<String> userRegisterCachePenetrationBloomFilter;
-
     private final RedissonClient redissonClient;
-
     private final StringRedisTemplate stringRedisTemplate;
 
     @Override
@@ -50,6 +49,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
                 .eq(UserDO::getUserName, userName);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
+        if (userDO == null) {
+            throw new ClientException(UserErrorCodeEnum.USER_NULL);
+        }
         UserRespDTO result = new UserRespDTO();
         BeanUtils.copyProperties(userDO, result);
         return result;
@@ -88,7 +90,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public void update(UserUpdateReqDTO requestParam) {
-        LambdaQueryWrapper<UserDO> updateWrapper = Wrappers.lambdaQuery(UserDO.class)
+        // TODO 验证当前用户名是否为登录用户
+        LambdaUpdateWrapper<UserDO> updateWrapper = Wrappers.lambdaUpdate(UserDO.class)
                 .eq(UserDO::getUserName, requestParam.getUserName());
         baseMapper.update(BeanUtil.toBean(requestParam, UserDO.class), updateWrapper);
     }
@@ -96,43 +99,46 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
-                .eq(UserDO::getUserName, requestParam.getUsername())
+                .eq(UserDO::getUserName, requestParam.getUserName())
                 .eq(UserDO::getPassword, requestParam.getPassword())
-                .eq(UserDO::getDelFlag, false);
+                .eq(UserDO::getDelFlag, 0);
         UserDO userDO = baseMapper.selectOne(queryWrapper);
         if (userDO == null) {
-            throw new ClientException("用户不存在");
+            throw new ClientException("用户不存在！！！！");
         }
-        Boolean hasLogin = stringRedisTemplate.hasKey("login_" + requestParam.getUsername());
+        Boolean hasLogin = stringRedisTemplate.hasKey(
+                CacheKeys.LOGIN_PREFIX + requestParam.getUserName());
         if (hasLogin != null && hasLogin) {
             throw new ClientException("用户已登录");
         }
         /**
          * Hash
-         * Key:login_用户名
-         * Value:
-         *  key:token
-         *  Val:JSON字符串
+         * Key：login_用户名
+         * Value：
+         *  Key：token标识
+         *  Val：JSON 字符串（用户信息）
          */
         String uuid = UUID.randomUUID().toString();
-
         stringRedisTemplate.opsForHash()
-                .put("login_" + requestParam.getUsername(), uuid, JSON.toJSONString(userDO));
-        stringRedisTemplate.expire("login_" + requestParam.getUsername(), 30L, TimeUnit.DAYS);
+                .put(CacheKeys.LOGIN_PREFIX + requestParam.getUserName(), uuid,
+                        JSON.toJSONString(userDO));
+        stringRedisTemplate.expire(CacheKeys.LOGIN_PREFIX + requestParam.getUserName(), 30L,
+                TimeUnit.DAYS);
         return new UserLoginRespDTO(uuid);
     }
 
     @Override
-    public Boolean checkLogin(String token, String userName) {
-        return stringRedisTemplate.opsForHash().get("login_" + userName, token) != null;
+    public Boolean checkLogin(String userName, String token) {
+        return stringRedisTemplate.opsForHash().get(CacheKeys.LOGIN_PREFIX + userName, token)
+                != null;
     }
 
     @Override
     public void logout(String userName, String token) {
         if (checkLogin(userName, token)) {
-            stringRedisTemplate.delete("login_" + userName);
+            stringRedisTemplate.delete(CacheKeys.LOGIN_PREFIX + userName);
             return;
         }
-        throw new ClientException("用户Token不存在或未登录");
+        throw new ClientException("用户Token不存在或用户未登录");
     }
 }
