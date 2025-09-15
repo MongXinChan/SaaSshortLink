@@ -1,4 +1,4 @@
-package com.MongxinChan.SaaSshortLink.admin.dto.req;
+package com.MongxinChan.SaaSshortLink.admin.remote.dto.req;
 
 import lombok.Data;
 
