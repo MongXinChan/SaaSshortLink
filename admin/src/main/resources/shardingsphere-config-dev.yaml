@@ -26,9 +26,13 @@ rules:
           standard:
             shardingColumn: userName
             #不能用gid，我们查当前用户下的gid分组，其是没有gid的
-            shardingAlgorithmName: user_table_hash_mod
+            shardingAlgorithmName: group_table_hash_mod
     shardingAlgorithms:
       user_table_hash_mod:
+        type: HASH_MOD
+        props:
+          sharding-count: 16
+      group_table_hash_mod:
         type: HASH_MOD
         props:
           sharding-count: 16
