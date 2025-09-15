@@ -12,10 +12,8 @@ import com.MongxinChan.SaaSshortLink.project.service.ShortLinkService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +32,7 @@ public class ShortLinkController {
     private final ShortLinkService shortLinkService;
 
     /***
-     *
+     * 短链接跳转原始链接
      */
     @GetMapping("/${short-uri}")
     public void restoreUrl(@PathVariable("short-uri") String shortUri,
