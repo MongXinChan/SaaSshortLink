@@ -224,14 +224,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
         boolean contains = shortUriCreateCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
-            //TODO 严谨来说此处需要封控
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
         String gotoIsNullShortLink = stringRedisTemplate.opsForValue()
                 .get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
 
         if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
-            //TODO 严谨来说此处需要封控
+            ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
 
@@ -255,7 +255,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             if (shortLinkGotoDO == null) {
                 stringRedisTemplate.opsForValue()
                         .set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),
-                                "-", 30, TimeUnit.MINUTES);
+                                "-", 30, TimeUnit.DAYS);
+                ((HttpServletResponse) response).sendRedirect("/page/notfound");
                 return;
             }
 
@@ -273,13 +274,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                             .set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl), "-", 30,
                                     TimeUnit.DAYS);
                 }
-                stringRedisTemplate.opsForValue().set(
-                        String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
-                        shortLinkDO.getShortUri(),
-                        LinkUtil.getLinkCacheValidDate(shortLinkDO.getValidDate()),
-                        TimeUnit.MILLISECONDS
-                );
-                ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
+                ((HttpServletResponse) response).sendRedirect("/page/notfound");
             }
         } finally {
             lock.unlock();
