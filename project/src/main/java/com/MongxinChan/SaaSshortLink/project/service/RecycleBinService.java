@@ -2,6 +2,7 @@ package com.MongxinChan.SaaSshortLink.project.service;
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRemoveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkPageRespDTO;
@@ -30,9 +31,16 @@ public interface RecycleBinService extends IService<ShortLinkDO> {
 
 
     /**
-     * 恢复短链接
+     * 从回收站恢复短链接
      *
      * @param requestParam 请求参数
      */
     void recoverRecycleBin(RecycleBinRecoverReqDTO requestParam);
+
+    /**
+     * 从回收站移除短链接
+     *
+     * @param requestParam 请求参数
+     */
+    void removeRecycleBin(RecycleBinRemoveReqDTO requestParam);
 }

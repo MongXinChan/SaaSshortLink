@@ -3,6 +3,7 @@ package com.MongxinChan.SaaSshortLink.project.controller;
 import com.MongxinChan.SaaSshortLink.project.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.project.common.convention.result.Results;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRemoveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkPageRespDTO;
@@ -42,11 +43,20 @@ public class RecycleBinController {
     }
 
     /**
-     *
+     * 从回收站中恢复短链接
      */
     @PostMapping("/api/saas-short-link/v1/recycle-bin/recover")
     public Result<Void> recoverRecycleBin(@RequestBody RecycleBinRecoverReqDTO requestParam) {
         recycleBinService.recoverRecycleBin(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 从回收站中移除短链接
+     */
+    @PostMapping("/api/saas-short-link/v1/recycle-bin/remove")
+    public Result<Void> removeRecycleBin(@RequestBody RecycleBinRemoveReqDTO requestParam) {
+        recycleBinService.removeRecycleBin(requestParam);
         return Results.success();
     }
 }

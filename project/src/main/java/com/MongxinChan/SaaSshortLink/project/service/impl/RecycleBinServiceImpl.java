@@ -7,6 +7,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinRemoveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkPageRespDTO;
@@ -74,6 +75,16 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
         baseMapper.update(shortLinkDO, updateWrapper);
         stringRedisTemplate.delete(
                 String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+    }
+
+    @Override
+    public void removeRecycleBin(RecycleBinRemoveReqDTO requestParam) {
+        LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
+                .eq(ShortLinkDO::getGid, requestParam.getGid())
+                .eq(ShortLinkDO::getEnableStatus, 1)
+                .eq(ShortLinkDO::getDelFlag, 0);
+        baseMapper.delete(updateWrapper);
     }
 
 

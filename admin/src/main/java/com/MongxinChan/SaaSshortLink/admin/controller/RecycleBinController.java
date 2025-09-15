@@ -2,9 +2,10 @@ package com.MongxinChan.SaaSshortLink.admin.controller;
 
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
-import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
-import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.ShortLinkRemoteService;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.resp.ShortLinkPageRespDTO;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -48,12 +49,22 @@ public class RecycleBinController {
     }
 
     /**
-     * 恢复短链接
+     * 从回收站中恢复短链接
      */
     @PostMapping("/api/saas-short-link/admin/v1/recycle-bin/recover")
     public Result<Void> pageShortLink(
             @RequestBody RecycleBinRecoverReqDTO requestParam) {
         shortLinkRemoteService.recoverRecycleBin(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 从回收站中移除短链接
+     */
+    @PostMapping("/api/saas-short-link/admin/v1/recycle-bin/remove")
+    public Result<Void> removeRecycleBin(
+            @RequestBody RecycleBinRemoveReqDTO requestParam) {
+        shortLinkRemoteService.removeRecycleBin(requestParam);
         return Results.success();
     }
 }
