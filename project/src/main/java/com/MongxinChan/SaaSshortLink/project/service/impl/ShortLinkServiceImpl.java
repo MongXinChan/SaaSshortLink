@@ -1,5 +1,6 @@
 package com.MongxinChan.SaaSshortLink.project.service.impl;
 
+import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.GOTO_IS_NULL_SHORT_LINK_KEY;
 import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.GOTO_SHORT_LINK_KEY;
 import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.LOCK_GOTO_SHORT_LINK_KEY;
 
@@ -33,6 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -212,6 +214,21 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             ((HttpServletResponse) response).sendRedirect(originalLink);
             return;
         }
+
+        boolean contains = shortUriCreateCachePenetrationBloomFilter.contains(fullShortUrl);
+        if (!contains) {
+            //TODO 严谨来说此处需要封控
+            return;
+        }
+        String gotoIsNullShortLink = stringRedisTemplate.opsForValue()
+                .get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
+
+        if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
+            //TODO 严谨来说此处需要封控
+            return;
+        }
+
+
         RLock lock = redissonClient.getLock(
                 String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl));
         lock.lock();
@@ -229,7 +246,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
 
             ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
             if (shortLinkGotoDO == null) {
-                //TODO 严谨来说此处需要封控
+                stringRedisTemplate.opsForValue()
+                        .set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl),
+                                "-", 30, TimeUnit.MINUTES);
                 return;
             }
 
