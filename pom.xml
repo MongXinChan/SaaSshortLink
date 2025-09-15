@@ -140,6 +140,7 @@
     <spring-boot.version>3.0.7</spring-boot.version>
     <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
     <spring-cloud.version>2022.0.3</spring-cloud.version>
+    <jsoup.version>1.15.3</jsoup.version>
   </properties>
 
   <version>1.0-SNAPSHOT</version>
