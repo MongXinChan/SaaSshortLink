@@ -2,7 +2,8 @@ package com.MongxinChan.SaaSshortLink.admin.remote.dto;
 
 import cn.hutool.http.HttpUtil;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
-import com.MongxinChan.SaaSshortLink.admin.dto.req.RecycleBinSaveReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
@@ -122,4 +123,14 @@ public interface ShortLinkRemoteService {
         });
     }
 
+    /**
+     * 恢复短链接
+     *
+     * @param requestParam 短链接恢复请求参数
+     */
+
+    default void recoverRecycleBin(RecycleBinRecoverReqDTO requestParam) {
+        HttpUtil.post("http://127.0.0.1:8001/api/saas-short-link/v1/recycle-bin/recover",
+                JSON.toJSONString(requestParam));
+    }
 }

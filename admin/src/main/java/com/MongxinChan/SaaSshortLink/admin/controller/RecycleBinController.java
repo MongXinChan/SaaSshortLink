@@ -2,7 +2,8 @@ package com.MongxinChan.SaaSshortLink.admin.controller;
 
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.result.Results;
-import com.MongxinChan.SaaSshortLink.admin.dto.req.RecycleBinSaveReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinRecoverReqDTO;
+import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.RecycleBinSaveReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.ShortLinkRemoteService;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.req.ShortLinkRecycleBinPageReqDTO;
 import com.MongxinChan.SaaSshortLink.admin.remote.dto.resp.ShortLinkPageRespDTO;
@@ -44,5 +45,15 @@ public class RecycleBinController {
     public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(
             ShortLinkRecycleBinPageReqDTO requestParam) {
         return shortLinkRemoteService.pageRecycleBinShortLink(requestParam);
+    }
+
+    /**
+     * 恢复短链接
+     */
+    @PostMapping("/api/saas-short-link/admin/v1/recycle-bin/recover")
+    public Result<Void> pageShortLink(
+            @RequestBody RecycleBinRecoverReqDTO requestParam) {
+        shortLinkRemoteService.recoverRecycleBin(requestParam);
+        return Results.success();
     }
 }
