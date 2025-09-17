@@ -2,9 +2,13 @@ package com.MongxinChan.SaaSshortLink.project.dao.mapper;
 
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkBrowserStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.HashMap;
+import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 浏览器统计访问持久层
@@ -20,4 +24,23 @@ public interface LinkBrowserStatsMapper extends BaseMapper<LinkBrowserStatsDO> {
             +
             "ON DUPLICATE KEY UPDATE cnt = cnt +  #{linkBrowserStats.cnt};")
     void shortLinkBrowserState(@Param("linkBrowserStats") LinkBrowserStatsDO linkBrowserStatsDO);
+
+
+    /**
+     * 根据短链接获取指定日期内浏览器监控数据
+     */
+    @Select("SELECT " +
+            "    browser, " +
+            "    SUM(cnt) AS count " +
+            "FROM " +
+            "    t_link_browser_stats " +
+            "WHERE " +
+            "    full_short_url = #{param.fullShortUrl} " +
+            "    AND gid = #{param.gid} " +
+            "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    full_short_url, gid, date, browser;")
+    List<HashMap<String, Object>> listBrowserStatsByShortLink(
+            @Param("param") ShortLinkStatsReqDTO requestParam);
+
 }
