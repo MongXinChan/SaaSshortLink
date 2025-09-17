@@ -37,7 +37,7 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
             "    AND gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    fullShortURL, gid, date, os;")
+            "    fullShortURL, gid, os;")
     List<HashMap<String, Object>> listOsStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 
