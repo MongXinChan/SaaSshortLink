@@ -17,6 +17,10 @@ spring:
       prefix: /templates/
       suffix: .html
 
+saas-short-link:
+  stats:
+    locate:
+      amap-key: 034f58707edfe663ed4106331c456057
 
 mybatis-plus:
   configuration:

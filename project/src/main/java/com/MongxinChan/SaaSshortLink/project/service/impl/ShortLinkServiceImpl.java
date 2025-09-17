@@ -3,6 +3,7 @@ package com.MongxinChan.SaaSshortLink.project.service.impl;
 import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.GOTO_IS_NULL_SHORT_LINK_KEY;
 import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.GOTO_SHORT_LINK_KEY;
 import static com.MongxinChan.SaaSshortLink.project.common.constant.RedisKeyConstant.LOCK_GOTO_SHORT_LINK_KEY;
+import static com.MongxinChan.SaaSshortLink.project.common.constant.ShortLinkConstant.AMAP_REMOTE_URL;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
@@ -11,13 +12,16 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.text.StrBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
 import com.MongxinChan.SaaSshortLink.project.common.convention.exception.ClientException;
 import com.MongxinChan.SaaSshortLink.project.common.convention.exception.ServiceException;
 import com.MongxinChan.SaaSshortLink.project.common.enums.VaildDateTypeEnum;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkLocateStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkGotoDO;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkAccessStatsMapper;
+import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkLocateStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkGotoMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkCreateReqDTO;
@@ -29,6 +33,8 @@ import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkPageRespDTO;
 import com.MongxinChan.SaaSshortLink.project.service.ShortLinkService;
 import com.MongxinChan.SaaSshortLink.project.toolkit.HashUtil;
 import com.MongxinChan.SaaSshortLink.project.toolkit.LinkUtil;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -44,6 +50,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +65,7 @@ import org.jsoup.nodes.Element;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -81,6 +89,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final RedissonClient redissonClient;
 
     private final LinkAccessStatsMapper linkAccessStatsMapper;
+
+    private final LinkLocateStatsMapper linkLocateStatsMapper;
+
+    @Value("${saas-short-link.stats.locate.amap-key}")
+    private String statsLocateAMapKey;
 
 
 
@@ -365,6 +378,29 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .date(new Date())
                     .build();
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
+
+            Map<String, Object> localeParamMap = new HashMap<>();
+            localeParamMap.put("key", statsLocateAMapKey);
+            localeParamMap.put("ip", remoteAddr);
+            String localeResultStr = HttpUtil.get(AMAP_REMOTE_URL, localeParamMap);
+            JSONObject localeResultObj = JSON.parseObject(localeResultStr);
+            String infoCode = localeResultObj.getString("infocode");
+            if (StrUtil.isNotBlank(infoCode) && StrUtil.equals(infoCode, "10000")) {
+                String province = localeResultObj.getString("province");
+                boolean unknownFlag = StrUtil.equals(province, "[]");
+                LinkLocateStatsDO linkLocaleStatsDO = LinkLocateStatsDO.builder()
+                        .province(unknownFlag ? "未知" : province)
+                        .city(unknownFlag ? "未知" : localeResultObj.getString("city"))
+                        .adcode(unknownFlag ? "未知" : localeResultObj.getString("adcode"))
+                        .cnt(1)
+                        .fullShortUrl(fullShortUrl)
+                        .country("中国")
+                        .gid(gid)
+                        .date(new Date())
+                        .build();
+                linkLocateStatsMapper.shortLinkLocateState(linkLocaleStatsDO);
+            }
+
         } catch (Throwable ex) {
             log.error("短链接访问量统计异常", ex);
         }
