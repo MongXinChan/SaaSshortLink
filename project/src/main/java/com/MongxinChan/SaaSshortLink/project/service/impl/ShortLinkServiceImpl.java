@@ -335,16 +335,17 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             ServletResponse response) {
         AtomicBoolean uvFirstFlag = new AtomicBoolean();
         Cookie[] cookies = ((HttpServletRequest) response).getCookies();
-        Runnable addResponseCookieTask = () -> {
-            String uv = UUID.fastUUID().toString();
-            Cookie uvCookie = new Cookie("uv", uv);
-            uvCookie.setMaxAge(60 * 60 * 24 * 30);
-            uvCookie.setPath(
-                    StrUtil.sub(fullShortUrl, fullShortUrl.indexOf("/"), fullShortUrl.length()));
-            ((HttpServletResponse) response).addCookie(uvCookie);
-            uvFirstFlag.set(Boolean.TRUE);
-        };
         try {
+            Runnable addResponseCookieTask = () -> {
+                String uv = UUID.fastUUID().toString();
+                Cookie uvCookie = new Cookie("uv", uv);
+                uvCookie.setMaxAge(60 * 60 * 24 * 30);
+                uvCookie.setPath(
+                        StrUtil.sub(fullShortUrl, fullShortUrl.indexOf("/"),
+                                fullShortUrl.length()));
+                ((HttpServletResponse) response).addCookie(uvCookie);
+                uvFirstFlag.set(Boolean.TRUE);
+            };
             if (ArrayUtil.isNotEmpty(cookies)) {
                 Arrays.stream(cookies)
                         .filter(each -> Objects.equals(each.getName(), "uv"))
