@@ -21,6 +21,7 @@ import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkBrowserStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkDeviceStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkLocateStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkNetworkStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkOsStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkGotoDO;
@@ -29,6 +30,7 @@ import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkAccessStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkBrowserStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkDeviceStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkLocateStatsMapper;
+import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkNetworkStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkOsStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkGotoMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
@@ -108,6 +110,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessLogsMapper linkAccessLogsMapper;
 
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
+
+    private final LinkNetworkStatsMapper linkNetworkStatsMapper;
 
     @Value("${saas-short-link.stats.locate.amap-key}")
     private String statsLocateAMapKey;
@@ -457,6 +461,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .date(new Date())
                         .build();
                 linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
+
+                LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
+                        .network(LinkUtil.getNetwork(((HttpServletRequest) request)))
+                        .cnt(1)
+                        .gid(gid)
+                        .fullShortUrl(fullShortUrl)
+                        .date(new Date())
+                        .build();
+                linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
             }
 
         } catch (Throwable ex) {
