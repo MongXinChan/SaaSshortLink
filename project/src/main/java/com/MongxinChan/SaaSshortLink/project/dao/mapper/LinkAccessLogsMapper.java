@@ -20,13 +20,13 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "    ip, " +
             "    COUNT(ip) AS count " +
             "FROM " +
-            "    t_link_access_logs " +
+            "    tlink_access_logs " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
-            "    AND create_time BETWEEN #{param.startDate} and #{param.endDate} " +
+            "    AND createTime BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid, ip " +
+            "    fullShortURL, gid, ip " +
             "ORDER BY " +
             "    count DESC " +
             "LIMIT 5;")
@@ -41,14 +41,14 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "    SUM(new_user) AS newUserCnt " +
             "FROM ( " +
             "    SELECT " +
-            "        CASE WHEN COUNT(DISTINCT DATE(create_time)) > 1 THEN 1 ELSE 0 END AS old_user, "
+            "        CASE WHEN COUNT(DISTINCT DATE(createTime)) > 1 THEN 1 ELSE 0 END AS old_user, "
             +
-            "        CASE WHEN COUNT(DISTINCT DATE(create_time)) = 1 AND MAX(create_time) >= #{param.startDate} AND MAX(create_time) <= #{param.endDate} THEN 1 ELSE 0 END AS new_user "
+            "        CASE WHEN COUNT(DISTINCT DATE(createTime)) = 1 AND MAX(createTime) >= #{param.startDate} AND MAX(createTime) <= #{param.endDate} THEN 1 ELSE 0 END AS new_user "
             +
             "    FROM " +
-            "        t_link_access_logs " +
+            "        tlink_access_logs " +
             "    WHERE " +
-            "        full_short_url = #{param.fullShortUrl} " +
+            "        fullShortURL = #{param.fullShortUrl} " +
             "        AND gid = #{param.gid} " +
             "    GROUP BY " +
             "        user " +

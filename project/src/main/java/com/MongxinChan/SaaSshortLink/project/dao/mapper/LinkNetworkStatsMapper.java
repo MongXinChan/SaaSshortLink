@@ -17,7 +17,7 @@ public interface LinkNetworkStatsMapper extends BaseMapper<LinkNetworkStatsDO> {
     /**
      * 记录访问设备监控数据
      */
-    @Insert("INSERT INTO t_link_network_stats (full_short_url, gid, date, cnt, network, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_network_stats (fullShortURL, gid, date, cnt, network, createTime, updateTime, delFlag) "
             +
             "VALUES( #{linkNetworkStats.fullShortUrl}, #{linkNetworkStats.gid}, #{linkNetworkStats.date}, #{linkNetworkStats.cnt}, #{linkNetworkStats.network}, NOW(), NOW(), 0) "
             +
@@ -32,13 +32,13 @@ public interface LinkNetworkStatsMapper extends BaseMapper<LinkNetworkStatsDO> {
             "    network, " +
             "    SUM(cnt) AS cnt " +
             "FROM " +
-            "    t_link_network_stats " +
+            "    tlink_network_stats " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid, network;")
+            "    fullShortURL, gid, network;")
     List<LinkNetworkStatsDO> listNetworkStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 

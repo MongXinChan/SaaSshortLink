@@ -16,7 +16,7 @@ public interface LinkDeviceStatsMapper extends BaseMapper<LinkDeviceStatsDO> {
     /**
      * 记录访问设备监控数据
      */
-    @Insert("INSERT INTO t_link_device_stats (full_short_url, gid, date, cnt, device, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_device_stats (fullShortURL, gid, date, cnt, device, createTime, updateTime, delFlag) "
             +
             "VALUES( #{linkDeviceStats.fullShortUrl}, #{linkDeviceStats.gid}, #{linkDeviceStats.date}, #{linkDeviceStats.cnt}, #{linkDeviceStats.device}, NOW(), NOW(), 0) "
             +
@@ -31,13 +31,13 @@ public interface LinkDeviceStatsMapper extends BaseMapper<LinkDeviceStatsDO> {
             "    device, " +
             "    SUM(cnt) AS cnt " +
             "FROM " +
-            "    t_link_device_stats " +
+            "    tlink_device_stats " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid, device;")
+            "    fullShortURL, gid, device;")
     List<LinkDeviceStatsDO> listDeviceStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 

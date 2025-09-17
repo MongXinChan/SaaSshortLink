@@ -17,7 +17,7 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
     /**
      * 记录地区访问监控数据
      */
-    @Insert("INSERT INTO t_link_os_stats (full_short_url, gid, date, cnt, os, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_os_stats (fullShortURL, gid, date, cnt, os, create_time, update_time, del_flag) "
             +
             "VALUES( #{linkOsStats.fullShortUrl}, #{linkOsStats.gid}, #{linkOsStats.date}, #{linkOsStats.cnt}, #{linkOsStats.os}, NOW(), NOW(), 0) "
             +
@@ -31,13 +31,13 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
             "    os, " +
             "    SUM(cnt) AS count " +
             "FROM " +
-            "    t_link_os_stats " +
+            "    tlink_os_stats " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid, date, os;")
+            "    fullShortURL, gid, date, os;")
     List<HashMap<String, Object>> listOsStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 

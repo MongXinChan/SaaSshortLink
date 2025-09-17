@@ -18,7 +18,7 @@ public interface LinkBrowserStatsMapper extends BaseMapper<LinkBrowserStatsDO> {
     /**
      * 记录浏览器访问监控数据
      */
-    @Insert("INSERT INTO t_link_browser_stats (full_short_url, gid, date, cnt, browser, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_browser_stats (fullShortURL, gid, date, cnt, browser, createTime, updateTime, delFlag) "
             +
             "VALUES( #{linkBrowserStats.fullShortUrl}, #{linkBrowserStats.gid}, #{linkBrowserStats.date}, #{linkBrowserStats.cnt}, #{linkBrowserStats.browser}, NOW(), NOW(), 0) "
             +
@@ -33,13 +33,13 @@ public interface LinkBrowserStatsMapper extends BaseMapper<LinkBrowserStatsDO> {
             "    browser, " +
             "    SUM(cnt) AS count " +
             "FROM " +
-            "    t_link_browser_stats " +
+            "    tlink_browser_stats " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid, date, browser;")
+            "    fullShortURL, gid, date, browser;")
     List<HashMap<String, Object>> listBrowserStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 
