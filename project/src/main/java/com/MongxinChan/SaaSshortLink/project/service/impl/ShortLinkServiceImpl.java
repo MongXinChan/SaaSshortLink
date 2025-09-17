@@ -18,10 +18,12 @@ import com.MongxinChan.SaaSshortLink.project.common.convention.exception.Service
 import com.MongxinChan.SaaSshortLink.project.common.enums.VaildDateTypeEnum;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkLocateStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkOsStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkGotoDO;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkAccessStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkLocateStatsMapper;
+import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkOsStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkGotoMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkCreateReqDTO;
@@ -91,6 +93,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessStatsMapper linkAccessStatsMapper;
 
     private final LinkLocateStatsMapper linkLocateStatsMapper;
+
+    private final LinkOsStatsMapper linkOsStatsMapper;
 
     @Value("${saas-short-link.stats.locate.amap-key}")
     private String statsLocateAMapKey;
@@ -399,6 +403,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .date(new Date())
                         .build();
                 linkLocateStatsMapper.shortLinkLocateState(linkLocaleStatsDO);
+                LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
+                        .os(LinkUtil.getOs(((HttpServletRequest) request)))
+                        .cnt(1)
+                        .gid(gid)
+                        .fullShortUrl(fullShortUrl)
+                        .date(new Date())
+                        .build();
+                linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
             }
 
         } catch (Throwable ex) {
