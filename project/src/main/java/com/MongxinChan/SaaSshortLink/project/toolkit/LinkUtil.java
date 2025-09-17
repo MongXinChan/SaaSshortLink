@@ -13,8 +13,12 @@ import java.util.Optional;
  */
 public class LinkUtil {
 
-    public static long getLinkCacheValidDate(Date valiDate) {
-        return Optional.ofNullable(valiDate)
+    /**
+     * 获取链接缓存有效期
+     *
+     * @param validDate
+     * @return
+     */
     public static long getLinkCacheValidDate(Date validDate) {
         return Optional.ofNullable(validDate)
                 .map(each -> DateUtil.between(new Date(), each, DateUnit.MS))
