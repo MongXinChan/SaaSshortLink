@@ -402,26 +402,26 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .build();
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
 
-            Map<String, Object> localeParamMap = new HashMap<>();
-            localeParamMap.put("key", statsLocateAMapKey);
-            localeParamMap.put("ip", remoteAddr);
-            String localeResultStr = HttpUtil.get(AMAP_REMOTE_URL, localeParamMap);
-            JSONObject localeResultObj = JSON.parseObject(localeResultStr);
-            String infoCode = localeResultObj.getString("infocode");
+            Map<String, Object> locateParamMap = new HashMap<>();
+            locateParamMap.put("key", statsLocateAMapKey);
+            locateParamMap.put("ip", remoteAddr);
+            String locateResultStr = HttpUtil.get(AMAP_REMOTE_URL, locateParamMap);
+            JSONObject locateResultObj = JSON.parseObject(locateResultStr);
+            String infoCode = locateResultObj.getString("infocode");
             if (StrUtil.isNotBlank(infoCode) && StrUtil.equals(infoCode, "10000")) {
-                String province = localeResultObj.getString("province");
+                String province = locateResultObj.getString("province");
                 boolean unknownFlag = StrUtil.equals(province, "[]");
-                LinkLocateStatsDO linkLocaleStatsDO = LinkLocateStatsDO.builder()
+                LinkLocateStatsDO linkLocateStatsDO = LinkLocateStatsDO.builder()
                         .province(unknownFlag ? "未知" : province)
-                        .city(unknownFlag ? "未知" : localeResultObj.getString("city"))
-                        .adcode(unknownFlag ? "未知" : localeResultObj.getString("adcode"))
+                        .city(unknownFlag ? "未知" : locateResultObj.getString("city"))
+                        .adcode(unknownFlag ? "未知" : locateResultObj.getString("adcode"))
                         .cnt(1)
                         .fullShortUrl(fullShortUrl)
                         .country("中国")
                         .gid(gid)
                         .date(new Date())
                         .build();
-                linkLocateStatsMapper.shortLinkLocateState(linkLocaleStatsDO);
+                linkLocateStatsMapper.shortLinkLocateState(linkLocateStatsDO);
 
                 String os = LinkUtil.getOs(((HttpServletRequest) request));
                 LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()

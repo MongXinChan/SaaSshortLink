@@ -18,10 +18,10 @@ public interface LinkLocateStatsMapper extends BaseMapper<LinkLocateStatsDO> {
      */
     @Insert("INSERT INTO tlink_locate_stats (fullShortURL, gid, date, cnt, country, province, city, adcode, createTime, updateTime, delFlag) "
             +
-            "VALUES( #{linkLocaleStats.fullShortUrl}, #{linkLocaleStats.gid}, #{linkLocaleStats.date}, #{linkLocaleStats.cnt}, #{linkLocaleStats.country}, #{linkLocaleStats.province}, #{linkLocaleStats.city}, #{linkLocaleStats.adcode}, NOW(), NOW(), 0) "
+            "VALUES( #{linkLocateStats.fullShortUrl}, #{linkLocateStats.gid}, #{linkLocateStats.date}, #{linkLocateStats.cnt}, #{linkLocateStats.country}, #{linkLocateStats.province}, #{linkLocateStats.city}, #{linkLocateStats.adcode}, NOW(), NOW(), 0) "
             +
-            "ON DUPLICATE KEY UPDATE cnt = cnt +  #{linkLocaleStats.cnt};")
-    void shortLinkLocateState(@Param("linkLocaleStats") LinkLocateStatsDO linkLocaleStatsDO);
+            "ON DUPLICATE KEY UPDATE cnt = cnt +  #{linkLocateStats.cnt};")
+    void shortLinkLocateState(@Param("linkLocateStats") LinkLocateStatsDO linkLocateStatsDO);
 
 
     /**
