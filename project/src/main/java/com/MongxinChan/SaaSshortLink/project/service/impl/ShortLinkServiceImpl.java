@@ -23,6 +23,7 @@ import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkDeviceStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkLocateStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkNetworkStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkOsStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkStatsTodayDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.ShortLinkGotoDO;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkAccessLogsMapper;
@@ -32,6 +33,7 @@ import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkDeviceStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkLocateStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkNetworkStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkOsStatsMapper;
+import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkStatsTodayMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkGotoMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkCreateReqDTO;
@@ -70,6 +72,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -112,6 +115,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
 
     private final LinkNetworkStatsMapper linkNetworkStatsMapper;
+
+    private final LinkStatsTodayMapper linkStatsTodayMapper;
 
     @Value("${saas-short-link.stats.locate.amap-key}")
     private String statsLocateAMapKey;
@@ -481,6 +486,18 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .fullShortUrl(fullShortUrl)
                         .build();
                 linkAccessLogsMapper.insert(linkAccessLogsDO);
+                baseMapper.incrementStats(gid, fullShortUrl, 1, uvFirstFlag.get() ? 1 : 0,
+                        uipFirstFlag ? 1 : 0);
+
+                LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
+                        .todayPv(1)
+                        .todayUv(uvFirstFlag.get() ? 1 : 0)
+                        .todayUip(uipFirstFlag ? 1 : 0)
+                        .gid(gid)
+                        .fullShortUrl(fullShortUrl)
+                        .date(new Date())
+                        .build();
+                linkStatsTodayMapper.shortLinkTodayState(linkStatsTodayDO);
             }
 
         } catch (Throwable ex) {
