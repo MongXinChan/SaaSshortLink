@@ -99,4 +99,18 @@ public class ShortLinkDO {
      */
     private Integer delFlag;
 
+    /**
+     * 历史PV
+     */
+    private Integer totalPv;
+
+    /**
+     * 历史UV
+     */
+    private Integer totalUv;
+
+    /**
+     * 历史UIP
+     */
+    private Integer totalUip;
 }
