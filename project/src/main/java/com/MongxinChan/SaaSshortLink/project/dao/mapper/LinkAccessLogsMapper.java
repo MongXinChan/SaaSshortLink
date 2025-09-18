@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.project.dao.mapper;
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessLogsDO;
+import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.HashMap;
@@ -90,4 +91,22 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             @Param("endDate") String endDate,
             @Param("userAccessLogsList") List<String> userAccessLogsList
     );
+
+    /**
+     * 根据短链接获取指定日期内PV、UV、UIP数据
+     */
+    @Select("SELECT " +
+            "    COUNT(user) AS pv, " +
+            "    COUNT(DISTINCT user) AS uv, " +
+            "    COUNT(DISTINCT ip) AS uip " +
+            "FROM " +
+            "    tlink_access_logs " +
+            "WHERE " +
+            "    full_short_url = #{param.fullShortUrl} " +
+            "    AND gid = #{param.gid} " +
+            "    AND create_time BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    full_short_url, gid;")
+    LinkAccessStatsDO findPvUvUidStatsByShortLink(
+            @Param("param") ShortLinkStatsReqDTO requestParam);
 }
