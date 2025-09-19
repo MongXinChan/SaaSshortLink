@@ -30,6 +30,7 @@ rules:
             shardingAlgorithmName: link_stats_today_hash_mod
       bindingTables:
         - tlink, tlink_stats_today
+      # shardingSphere绑定表
     shardingAlgorithms:
       link_table_hash_mod:
         type: HASH_MOD
