@@ -102,11 +102,11 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "FROM " +
             "    tlink_access_logs " +
             "WHERE " +
-            "    full_short_url = #{param.fullShortUrl} " +
+            "    fullShortURL = #{param.fullShortUrl} " +
             "    AND gid = #{param.gid} " +
             "    AND create_time BETWEEN #{param.startDate} and #{param.endDate} " +
             "GROUP BY " +
-            "    full_short_url, gid;")
+            "    fullShortURL, gid;")
     LinkAccessStatsDO findPvUvUidStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 }
