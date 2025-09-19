@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.project.dao.mapper;
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkOsStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.HashMap;
@@ -41,4 +42,20 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
     List<HashMap<String, Object>> listOsStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 
+
+    /**
+     * 根据分组获取指定日期内操作系统监控数据
+     */
+    @Select("SELECT " +
+            "    os, " +
+            "    SUM(cnt) AS count " +
+            "FROM " +
+            "    tlink_os_stats " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid, os;")
+    List<HashMap<String, Object>> listOsStatsByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
 }

@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.project.service;
 
 
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkStatsAccessRecordRespDTO;
@@ -19,6 +20,15 @@ public interface ShortLinkStatsService {
      * @return 短链接监控数据
      */
     ShortLinkStatsRespDTO oneShortLinkStats(ShortLinkStatsReqDTO requestParam);
+
+    /**
+     * 获取分组短链接监控数据
+     *
+     * @param requestParam 获取分组短链接监控数据入参
+     * @return 分组短链接监控数据
+     */
+    ShortLinkStatsRespDTO groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam);
+
 
 
     /**

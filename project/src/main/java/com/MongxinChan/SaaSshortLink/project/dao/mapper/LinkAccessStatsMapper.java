@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.project.dao.mapper;
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
@@ -44,6 +45,25 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
+     * 根据分组获取指定日期内基础监控数据
+     */
+    @Select("SELECT " +
+            "    date, " +
+            "    SUM(pv) AS pv, " +
+            "    SUM(uv) AS uv, " +
+            "    SUM(uip) AS uip " +
+            "FROM " +
+            "    tlink_access_stats " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid, date;")
+    List<LinkAccessStatsDO> listStatsByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
+
+
+    /**
      * 根据短链接获取指定日期内小时基础监控数据
      */
     @Select("SELECT " +
@@ -59,6 +79,23 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
             "    fullShortURL, gid, hour;")
     List<LinkAccessStatsDO> listHourStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
+
+    /**
+     * 根据分组获取指定日期内小时基础监控数据
+     */
+    @Select("SELECT " +
+            "    hour, " +
+            "    SUM(pv) AS pv " +
+            "FROM " +
+            "    tlink_access_stats " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid, hour;")
+    List<LinkAccessStatsDO> listHourStatsByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
+
 
     /**
      * 根据短链接获取指定日期内小时基础监控数据
@@ -77,4 +114,19 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listWeekdayStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
 
+    /**
+     * 根据分组获取指定日期内小时基础监控数据
+     */
+    @Select("SELECT " +
+            "    weekday, " +
+            "    SUM(pv) AS pv " +
+            "FROM " +
+            "    t_link_access_stats " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid, weekday;")
+    List<LinkAccessStatsDO> listWeekdayStatsByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
 }

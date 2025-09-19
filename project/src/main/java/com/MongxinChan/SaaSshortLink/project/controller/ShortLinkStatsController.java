@@ -2,6 +2,7 @@ package com.MongxinChan.SaaSshortLink.project.controller;
 
 import com.MongxinChan.SaaSshortLink.project.common.convention.result.Result;
 import com.MongxinChan.SaaSshortLink.project.common.convention.result.Results;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkStatsAccessRecordRespDTO;
@@ -24,7 +25,7 @@ public class ShortLinkStatsController {
     /**
      * 访问单个短链接指定时间内监控数据
      */
-    @GetMapping("/api/short-link/v1/stats")
+    @GetMapping("/api/saas-short-link/v1/stats")
     public Result<ShortLinkStatsRespDTO> shortLinkStats(ShortLinkStatsReqDTO requestParam) {
         return Results.success(shortLinkStatsService.oneShortLinkStats(requestParam));
     }
@@ -33,9 +34,20 @@ public class ShortLinkStatsController {
     /**
      * 访问单个短链接指定时间内访问记录监控数据
      */
-    @GetMapping("/api/short-link/v1/stats/access-record")
+    @GetMapping("/api/saas-short-link/v1/stats/access-record")
     public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> shortLinkStatsAccessRecord(
             ShortLinkStatsAccessRecordReqDTO requestParam) {
         return Results.success(shortLinkStatsService.shortLinkStatsAccessRecord(requestParam));
     }
+
+    /**
+     * 访问分组短链接指定时间内监控数据
+     */
+    @GetMapping("/api/saas-short-link/v1/stats/group")
+    public Result<ShortLinkStatsRespDTO> groupShortLinkStats(
+            ShortLinkGroupStatsReqDTO requestParam) {
+        return Results.success(shortLinkStatsService.groupShortLinkStats(requestParam));
+    }
+
+
 }

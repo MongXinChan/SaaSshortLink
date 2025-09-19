@@ -2,6 +2,7 @@ package com.MongxinChan.SaaSshortLink.project.dao.mapper;
 
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessLogsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.HashMap;
@@ -35,6 +36,26 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "LIMIT 5;")
     List<HashMap<String, Object>> listTopIpByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
+
+    /**
+     * 根据分组获取指定日期内高频访问IP数据
+     */
+    @Select("SELECT " +
+            "    ip, " +
+            "    COUNT(ip) AS count " +
+            "FROM " +
+            "    tlink_access_logs " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND createTime BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid, ip " +
+            "ORDER BY " +
+            "    count DESC " +
+            "LIMIT 5;")
+    List<HashMap<String, Object>> listTopIpByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
+
 
     /**
      * 根据短链接获取指定日期内新旧访客数据
@@ -109,4 +130,22 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "    fullShortURL, gid;")
     LinkAccessStatsDO findPvUvUidStatsByShortLink(
             @Param("param") ShortLinkStatsReqDTO requestParam);
+
+
+    /**
+     * 根据分组获取指定日期内PV、UV、UIP数据
+     */
+    @Select("SELECT " +
+            "    COUNT(user) AS pv, " +
+            "    COUNT(DISTINCT user) AS uv, " +
+            "    COUNT(DISTINCT ip) AS uip " +
+            "FROM " +
+            "    tlink_access_logs " +
+            "WHERE " +
+            "    gid = #{param.gid} " +
+            "    AND createTime BETWEEN #{param.startDate} and #{param.endDate} " +
+            "GROUP BY " +
+            "    gid;")
+    LinkAccessStatsDO findPvUvUidStatsByGroup(
+            @Param("param") ShortLinkGroupStatsReqDTO requestParam);
 }

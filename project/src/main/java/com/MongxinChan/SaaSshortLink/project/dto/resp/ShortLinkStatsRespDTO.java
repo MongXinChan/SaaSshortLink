@@ -1,16 +1,11 @@
 package com.MongxinChan.SaaSshortLink.project.dto.resp;
 
-
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-/**
- * 短链接监控响应参数
- */
 @Data
 @Builder
 @NoArgsConstructor
