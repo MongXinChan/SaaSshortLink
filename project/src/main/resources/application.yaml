@@ -18,6 +18,8 @@ spring:
       suffix: .html
 
 saas-short-link:
+  domain:
+    default: loners.site:8001
   stats:
     locate:
       amap-key: 034f58707edfe663ed4106331c456057
