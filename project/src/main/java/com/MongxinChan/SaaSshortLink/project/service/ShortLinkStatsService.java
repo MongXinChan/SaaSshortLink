@@ -1,6 +1,7 @@
 package com.MongxinChan.SaaSshortLink.project.service;
 
 
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsAccessRecordReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkGroupStatsReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkStatsReqDTO;
@@ -39,4 +40,13 @@ public interface ShortLinkStatsService {
      */
     IPage<ShortLinkStatsAccessRecordRespDTO> shortLinkStatsAccessRecord(
             ShortLinkStatsAccessRecordReqDTO requestParam);
+
+    /**
+     * 访问分组短链接指定时间内访问记录监控数据
+     *
+     * @param requestParam 获取分组短链接监控访问记录数据入参
+     * @return 分组访问记录监控数据
+     */
+    IPage<ShortLinkStatsAccessRecordRespDTO> groupShortLinkStatsAccessRecord(
+            ShortLinkGroupStatsAccessRecordReqDTO requestParam);
 }
