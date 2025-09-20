@@ -519,7 +519,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .date(new Date())
                         .build();
                 linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
-                String network = LinkUtil.getDevice((HttpServletRequest) request);
+                String network = LinkUtil.getNetwork((HttpServletRequest) request);
 
                 LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
                         .network(network)
