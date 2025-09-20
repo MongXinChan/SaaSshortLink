@@ -2,12 +2,18 @@ package com.MongxinChan.SaaSshortLink.admin.remote.dto.req;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 短链接创建请求对象、
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ShortLinkCreateReqDTO {
 
 

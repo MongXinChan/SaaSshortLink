@@ -36,9 +36,12 @@ import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkOsStatsMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.LinkStatsTodayMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkGotoMapper;
 import com.MongxinChan.SaaSshortLink.project.dao.mapper.ShortLinkMapper;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkBaseInfoRespDTO;
+import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkCreateReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkPageReqDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.req.ShortLinkUpdateReqDTO;
+import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkCreateRespDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import com.MongxinChan.SaaSshortLink.project.dto.resp.ShortLinkPageRespDTO;
@@ -60,6 +63,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -196,6 +200,35 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 //TODO 先写死，后续有域名管理
                 .originUrl(requestParam.getOriginUrl())
                 .gid(requestParam.getGid())
+                .build();
+    }
+
+    @Override
+    public ShortLinkBatchCreateRespDTO batchCreateShortLink(
+            ShortLinkBatchCreateReqDTO requestParam) {
+        List<String> originUrls = requestParam.getOriginUrls();
+        List<String> describes = requestParam.getDescribes();
+        List<ShortLinkBaseInfoRespDTO> result = new ArrayList<>();
+        for (int i = 0; i < originUrls.size(); i++) {
+            ShortLinkCreateReqDTO shortLinkCreateReqDTO = BeanUtil.toBean(requestParam,
+                    ShortLinkCreateReqDTO.class);
+            shortLinkCreateReqDTO.setOriginUrl(originUrls.get(i));
+            shortLinkCreateReqDTO.setDescribe(describes.get(i));
+            try {
+                ShortLinkCreateRespDTO shortLink = createShortLink(shortLinkCreateReqDTO);
+                ShortLinkBaseInfoRespDTO linkBaseInfoRespDTO = ShortLinkBaseInfoRespDTO.builder()
+                        .fullShortUrl(shortLink.getFullShortUrl())
+                        .originUrl(shortLink.getOriginUrl())
+                        .describe(describes.get(i))
+                        .build();
+                result.add(linkBaseInfoRespDTO);
+            } catch (Throwable ex) {
+                log.error("批量创建短链接失败，原始参数：{}", originUrls.get(i));
+            }
+        }
+        return ShortLinkBatchCreateRespDTO.builder()
+                .total(result.size())
+                .baseLinkInfos(result)
                 .build();
     }
 
