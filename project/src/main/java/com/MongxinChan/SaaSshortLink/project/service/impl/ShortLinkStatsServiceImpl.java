@@ -287,18 +287,16 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 .filter(item -> Objects.equals(each, DateUtil.formatDate(item.getDate())))
                 .findFirst()
                 .ifPresentOrElse(item -> {
-                    Date currDate = DateUtil.parse(each).toJdkDate();
                     ShortLinkStatsAccessDailyRespDTO accessDailyRespDTO = ShortLinkStatsAccessDailyRespDTO.builder()
-                            .date(currDate)
+                            .date(each)
                             .pv(item.getPv())
                             .uv(item.getUv())
                             .uip(item.getUip())
                             .build();
                     daily.add(accessDailyRespDTO);
                 }, () -> {
-                    Date currDate = DateUtil.parse(each).toJdkDate();
                     ShortLinkStatsAccessDailyRespDTO accessDailyRespDTO = ShortLinkStatsAccessDailyRespDTO.builder()
-                            .date(currDate)
+                            .date(each)
                             .pv(0)
                             .uv(0)
                             .uip(0)

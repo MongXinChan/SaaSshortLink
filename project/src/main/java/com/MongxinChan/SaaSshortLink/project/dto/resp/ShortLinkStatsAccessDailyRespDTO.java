@@ -1,7 +1,5 @@
 package com.MongxinChan.SaaSshortLink.project.dto.resp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +17,7 @@ public class ShortLinkStatsAccessDailyRespDTO {
     /**
      * 日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private Date date;
+    private String date;
 
     /**
      * 访问量
