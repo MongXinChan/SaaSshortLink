@@ -6,6 +6,7 @@ import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum
 import static com.MongxinChan.SaaSshortLink.admin.common.enums.UserErrorCodeEnum.USER_SAVE_ERROR;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.UUID;
 import com.MongxinChan.SaaSshortLink.admin.common.constant.CacheKeys;
 import com.MongxinChan.SaaSshortLink.admin.common.convention.exception.ClientException;
@@ -24,6 +25,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBloomFilter;
@@ -109,10 +111,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (userDO == null) {
             throw new ClientException("用户不存在！！！！");
         }
-        Boolean hasLogin = stringRedisTemplate.hasKey(
-                CacheKeys.LOGIN_PREFIX + requestParam.getUserName());
-        if (hasLogin != null && hasLogin) {
-            throw new ClientException("用户已登录");
+        Map<Object, Object> hasLoginMap = stringRedisTemplate.opsForHash().
+                entries(CacheKeys.LOGIN_PREFIX + requestParam.getUserName());
+        if (CollUtil.isNotEmpty(hasLoginMap)) {
+            String token = hasLoginMap.keySet().stream()
+                    .findFirst()
+                    .map(Object::toString)
+                    .orElseThrow(() -> new ClientException("用户登陆错误"));
+            return new UserLoginRespDTO(token);
         }
         /**
          * Hash
