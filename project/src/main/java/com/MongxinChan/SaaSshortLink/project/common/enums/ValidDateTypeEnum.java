@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
  * @author Mongxin
  */
 @RequiredArgsConstructor
-public enum VaildDateTypeEnum {
+public enum ValidDateTypeEnum {
 
     /**
      * 永久有效期

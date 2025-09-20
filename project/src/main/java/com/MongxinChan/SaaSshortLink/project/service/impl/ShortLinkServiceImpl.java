@@ -15,7 +15,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.MongxinChan.SaaSshortLink.project.common.convention.exception.ClientException;
 import com.MongxinChan.SaaSshortLink.project.common.convention.exception.ServiceException;
-import com.MongxinChan.SaaSshortLink.project.common.enums.VaildDateTypeEnum;
+import com.MongxinChan.SaaSshortLink.project.common.enums.ValidDateTypeEnum;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessLogsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkAccessStatsDO;
 import com.MongxinChan.SaaSshortLink.project.dao.entity.LinkBrowserStatsDO;
@@ -278,6 +278,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .validDateType(requestParam.getValidDateType())
                 .validDate(requestParam.getValidDate())
                 .build();
+        //如果匹配分组表示匹配
         if (Objects.equals(hasShortLinkDO.getGid(), requestParam.getGid())) {
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(
                             ShortLinkDO.class)
@@ -286,7 +287,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLinkDO::getDelFlag, 0)
                     .eq(ShortLinkDO::getEnableStatus, 0)
                     .set(Objects.equals(requestParam.getValidDateType(),
-                                    VaildDateTypeEnum.PERMANENT.getType()), ShortLinkDO::getValidDate,
+                                    ValidDateTypeEnum.PERMANENT.getType()), ShortLinkDO::getValidDate,
                             null);
             baseMapper.update(shortLinkDO, updateWrapper);
         } else {
@@ -298,6 +299,25 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLinkDO::getEnableStatus, 0);
             baseMapper.delete(updateWrapper);
             baseMapper.insert(shortLinkDO);
+        }
+        /**
+         * 检测是否类型匹配，这里的逻辑是若DateType是0则是永久，而设置其有效期为空
+         * 只要有效期规则发生变化（类型或截止日），就把当前短链在 Redis 里的缓存清掉；
+         * 如果旧链已过期，还要额外清掉‘永久/未过期’标记缓存，让链接重新生效
+         * */
+        if (!Objects.equals(hasShortLinkDO.getValidDateType(), requestParam.getValidDateType())
+                || !Objects.equals(hasShortLinkDO.getValidDate(), shortLinkDO.getValidDate())) {
+            stringRedisTemplate.delete(
+                    String.format(GOTO_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
+            if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate()
+                    .before(new Date())) {
+                if (Objects.equals(requestParam.getValidDateType(),
+                        ValidDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate()
+                        .after(new Date())) {
+                    stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY,
+                            requestParam.getFullShortUrl()));
+                }
+            }
         }
     }
 
