@@ -28,8 +28,8 @@
     COALESCE(s.today_pv, 0) AS todayPv,
     COALESCE(s.today_uv, 0) AS todayUv,
     COALESCE(s.today_uip, 0) AS todayUip
-    FROM t_link t
-    LEFT JOIN t_link_stats_today s ON t.gid = s.gid
+    FROM tlink t
+    LEFT JOIN tlink_stats_today s ON t.gid = s.gid
     AND t.fullShorfURL = s.fullShorfURL
     AND s.date = CURDATE()
     WHERE t.gid = #{gid}

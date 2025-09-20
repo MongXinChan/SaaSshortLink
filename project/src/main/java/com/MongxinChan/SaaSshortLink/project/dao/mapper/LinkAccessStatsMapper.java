@@ -121,7 +121,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
             "    weekday, " +
             "    SUM(pv) AS pv " +
             "FROM " +
-            "    t_link_access_stats " +
+            "    tlink_access_stats " +
             "WHERE " +
             "    gid = #{param.gid} " +
             "    AND date BETWEEN #{param.startDate} and #{param.endDate} " +

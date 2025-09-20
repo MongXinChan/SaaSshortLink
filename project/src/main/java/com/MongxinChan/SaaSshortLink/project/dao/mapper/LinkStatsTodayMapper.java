@@ -13,7 +13,7 @@ public interface LinkStatsTodayMapper extends BaseMapper<LinkStatsTodayDO> {
     /**
      * 记录今日统计监控数据
      */
-    @Insert("INSERT INTO t_link_stats_today (full_short_url, gid, date,  today_uv, today_pv, today_uip, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_stats_today (fullShortURL, gid, date,  today_uv, today_pv, today_uip, createTime, updateTime, del_flag) "
             +
             "VALUES( #{linkTodayStats.fullShortUrl}, #{linkTodayStats.gid}, #{linkTodayStats.date}, #{linkTodayStats.todayUv}, #{linkTodayStats.todayPv}, #{linkTodayStats.todayUip}, NOW(), NOW(), 0) "
             +

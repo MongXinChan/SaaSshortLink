@@ -18,7 +18,7 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
     /**
      * 记录地区访问监控数据
      */
-    @Insert("INSERT INTO tlink_os_stats (fullShortURL, gid, date, cnt, os, create_time, update_time, del_flag) "
+    @Insert("INSERT INTO tlink_os_stats (fullShortURL, gid, date, cnt, os, createTime, updateTime, del_flag) "
             +
             "VALUES( #{linkOsStats.fullShortUrl}, #{linkOsStats.gid}, #{linkOsStats.date}, #{linkOsStats.cnt}, #{linkOsStats.os}, NOW(), NOW(), 0) "
             +
